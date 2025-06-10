@@ -10,7 +10,7 @@ class DepartementController extends Controller
     // Lister tous les départements
     public function index()
     {
-        return Departement::with('metiers', 'batiments')->get();
+        return Departement::with('metiers', 'batiment')->get();
     }
 
     // Créer un nouveau département
@@ -19,7 +19,8 @@ class DepartementController extends Controller
         $validated = $request->validate([
             'nom_departement' => 'required|string|max:255|unique:departements,nom_departement',
             'batiment_id' => 'required|exists:batiments,id',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'formateur_id' => 'required|exists:formateurs,id'
         ]);
 
         $departement = Departement::create($validated);
@@ -29,7 +30,7 @@ class DepartementController extends Controller
     // Afficher un département par son ID
     public function show($id)
     {
-        $departement = Departement::with('metiers', 'batiments')->find($id);
+        $departement = Departement::with('metiers', 'batiment')->find($id);
 
         if (!$departement) {
             return response()->json(['message' => 'Département non trouvé'], 404);
@@ -50,7 +51,8 @@ class DepartementController extends Controller
         $validated = $request->validate([
             'nom_departement' => 'required|string|max:255|unique:departements,nom_departement,' . $id,
             'batiment_id' => 'required|exists:batiments,id',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'formateur_id' => 'required|exists:formateurs,id'
         ]);
 
         $departement->update($validated);

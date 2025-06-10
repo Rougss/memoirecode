@@ -2,26 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Annee extends Model
+class Chef_Departement extends Model
 {
     use HasFactory;
 
-   
     protected $fillable = [
-        'intitule',
-        'annee',
+        'user_id'
     ];
-    
 
-  
-
- 
+     public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function emploiDuTemps()
     {
         return $this->hasMany(EmploiDuTemps::class);
     }
+
 
 }

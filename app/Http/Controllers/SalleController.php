@@ -11,7 +11,7 @@ class SalleController extends Controller
     public function index()
     {
         // Charge aussi le bâtiment lié pour éviter la requête N+1
-        return Salle::with('batiment')->get();
+        return Salle::with('batiments')->get();
     }
 
     // Créer une nouvelle salle

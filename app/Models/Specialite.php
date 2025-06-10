@@ -14,8 +14,7 @@ class Specialite extends Model
         'intitule'
     ];
 
-    public function metiers()
-    {
-        return $this->hasMany(Metier::class);
-    }
+   public function formateurs(){
+    return $this->hasMany(Formateur::class);
+   }
 }

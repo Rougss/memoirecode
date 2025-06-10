@@ -15,7 +15,8 @@ class Competence extends Model
         'numero_competence',
         'quota_horaire',
         'metier_id',
-        'formateur_id'
+        'formateur_id',
+        'salle_id'
     ];
 
     protected $casts = [
@@ -35,11 +36,20 @@ class Competence extends Model
 
     public function emploiDuTemps()
     {
-        return $this->hasMany(EmploiDuTemps::class);
+        return $this->belongsTo(EmploiDuTemps::class,'emploi_du_temps_id');
     }
 
     public function integrations()
     {
         return $this->hasMany(Integration::class);
     }
+    public function compeSemestres()
+    {
+        return $this->hasMany(CompeSemestre::class);
+    }
+    public function compEmplois()
+    {
+        return $this->hasMany(CompEmploi::class);
+    }
+    
 }

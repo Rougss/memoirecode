@@ -17,9 +17,8 @@ class EmploiDuTemps extends Model
         'heure_fin',
         'date_debut',
         'date_fin',
-        'salle_id',
-        'competence_id',
-        'annee_id',
+        
+
     ];
 
     protected $casts = [
@@ -35,42 +34,14 @@ class EmploiDuTemps extends Model
         return $this->belongsTo(Annee::class, 'annee_id');
     }
 
-    public function salle()
+     public function compemplois()
     {
-        return $this->belongsTo(Salle::class, 'salle_id');
+        return $this->hasMany(CompEmploi::class, 'emploi_du_temps_id');
     }
 
-    public function competence()
-    {
-        return $this->belongsTo(Competence::class, 'competence_id');
-    }
+   
 
-    // Méthodes
-    public function creerCreneau($data)
-    {
-        return self::create($data);
-    }
+   
 
-    public function modifierCreneau($data)
-    {
-        return $this->update($data);
-    }
-
-    public function supprimerCreneau()
-    {
-        return $this->delete();
-    }
-
-    public function verifierDisponibilite()
-    {
-        return $this->salle->verifierDisponibilite(
-            $this->date_debut,
-            $this->heure_debut,
-            $this->heure_fin
-        ) && $this->competence->formateur->verifierDisponibilite(
-            $this->date_debut,
-            $this->heure_debut,
-            $this->heure_fin
-        );
-    }
+    
 }

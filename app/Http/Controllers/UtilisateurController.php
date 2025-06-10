@@ -9,6 +9,14 @@ use App\Models\Formateur;
 use App\Models\Surveillant;
 use App\Models\Administrateur;
 use App\Models\DirecteurDesEtude;
+use App\Models\Chef_Departement;
+use App\Models\Specialite;
+use App\Models\Departement;
+use App\Models\Salle;
+use App\Models\Batiment;
+use App\Models\Niveau;
+use App\Models\Annee;
+use App\Models\TypeFormation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -39,10 +47,49 @@ class UtilisateurController extends Controller
                 return $this->surveillantDashboard();
             case 'Elève':
                 return $this->eleveDashboard();
+            case 'Chef_Departement':
+                return $this->chef_DepartementDashboard();
             default:
                 return redirect()->route('login');
         }
     }
+
+    public function getStats()
+{
+    try {
+        // Compter les différentes entités
+        $stats = [
+            'utilisateurs' => User::count(),
+            'specialites' => Specialite::count(),
+            'departements' => Departement::count(),
+            'salles' => Salle::count(),
+            'batiments' => Batiment::count(),
+            'niveaux' => Niveau::count(),
+            'annees' => Annee::count(),
+            'formations' => TypeFormation::count(),
+        ];
+
+        // Statistiques détaillées par rôle (optionnel)
+        $statsDetaillees = [
+            'utilisateurs_par_role' => User::selectRaw('role, COUNT(*) as count')
+                ->groupBy('role')
+                ->get()
+                ->pluck('count', 'role')
+                ->toArray(),
+            
+            'utilisateurs_actifs' => User::where('statut', 'actif')->count(),
+            'utilisateurs_inactifs' => User::where('statut', 'inactif')->count(),
+        ];
+
+        return response()->json(array_merge($stats, $statsDetaillees), 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Erreur lors de la récupération des statistiques',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
 
     // Dashboard administrateur (statistiques)
     private function adminDashboard()
@@ -51,8 +98,9 @@ class UtilisateurController extends Controller
         $totalEleves = Eleve::count();
         $totalFormateurs = Formateur::count();
         $totalSurveilants = Surveillant::count();
+        $totalChefsDepartement = Chef_Departement::count();
         
-        return view('dashboard.admin', compact('totalUsers', 'totalEleves', 'totalFormateurs', 'totalSurveilants'));
+        return view('dashboard.admin', compact('totalUsers', 'totalEleves', 'totalFormateurs', 'totalSurveilants', 'totalChefsDepartement'));
     }
 
     // Dashboards spécifiques pour chaque rôle
@@ -74,6 +122,10 @@ class UtilisateurController extends Controller
     private function eleveDashboard()
     {
         return view('dashboard.eleve');
+    }
+    private function chef_DepartementDashboard()
+    {
+        return view('dashboard.chef_depart');
     }
 
     // GESTION DES UTILISATEURS (Réservée aux Administrateurs)
@@ -135,7 +187,7 @@ class UtilisateurController extends Controller
 
   if ($role && $role->intitule === 'Elève') {
     $rules['metier_id'] = 'required|exists:metiers,id';
-    $rules['salle_id'] = 'required|exists:salles,id'; // ✅ Ajout de la validation pour salle_id
+   
 }
 
 
@@ -353,7 +405,7 @@ class UtilisateurController extends Controller
                     'user_id' => $user->id,
                     'contact_urgence' => $request->contact_urgence,
                     'metier_id' => $request->metier_id,
-                    'salle_id' => $request->salle_id, // Ajout de la salle_id pour les élèves
+                    
                 ]);
                 break;
                 
@@ -404,6 +456,7 @@ class UtilisateurController extends Controller
             case 'Directeur des Etudes':
                 DirecteurDesEtude::where('user_id', $user->id)->delete();
                 break;
+        
         }
     }
 }

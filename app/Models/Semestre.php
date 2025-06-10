@@ -21,7 +21,7 @@ class Semestre extends Model
         'date_fin' => 'date'
     ];
 
-  public function competences()
+  public function compeSemestres()
     {
         return $this->hasMany(Competence::class);
     }

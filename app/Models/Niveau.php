@@ -11,11 +11,11 @@ class Niveau extends Model
 
     protected $fillable = [
         'intitule',
+       'type_formation_id'
     ];
 
     // Un niveau peut avoir plusieurs métiers
-    public function metiers()
-    {
-        return $this->hasMany(Metier::class);
+    public function TypeFormation(){
+         return $this->belongsTo(TypeFormation::class, 'type_formation_id');
     }
 }

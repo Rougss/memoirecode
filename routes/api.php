@@ -16,6 +16,10 @@ use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\TypeFormationController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CompeSemestreController;
+use App\Http\Controllers\CompEmploiController;
+use App\Http\Controllers\FormaDepartController;
+use App\Models\Salle;
 use Illuminate\Support\Facades\Route;
 
 // ================================
@@ -49,6 +53,8 @@ Route::middleware(['auth:api'])->group(function () {
     // ROUTES ADMINISTRATEUR (sans restriction de rôle)
     // ================================
     Route::prefix('admin')->group(function () {
+
+        Route::get('/stats', [UtilisateurController::class, 'getStats']);
         
         // Gestion des utilisateurs
         Route::prefix('users')->group(function () {
@@ -59,12 +65,31 @@ Route::middleware(['auth:api'])->group(function () {
             Route::delete('/{id}', [UtilisateurController::class, 'destroy']);
             Route::post('/{id}/reset-password', [UtilisateurController::class, 'resetPassword']);
         });
+
+        Route::prefix('compesemestres')->group(function () {
+            Route::get('/semestre/{semestreId}/competences', [CompeSemestreController::class, 'getCompetencesBySemestre']);
+            Route::get('/competence/{competenceId}/semestres', [CompeSemestreController::class, 'getSemestresByCompetence']);
+            Route::post('/ajouter', [CompeSemestreController::class, 'store']);
+        });
+
+        Route::prefix('compemplois')->group(function () {
+            Route::get('/emploi/{emploi_du_tempsId}/competences', [CompEmploiController::class, 'getCompetencesByEmploi']);
+            Route::get('/competence/{competenceId}/emploi_du_temps', [CompEmploiController::class, 'getEmploiDuTempsByCompetence']);
+            Route::post('/ajouter', [CompEmploiController::class, 'store']);
+        });
+
+        Route::prefix('formadeparts')->group(function () {
+            Route::get('/departement/{departementId}/formateurs', [FormaDepartController::class, 'getFormateursByDepartement']);
+            Route::get('/formation/{formationId}/departements', [FormaDepartController::class, 'getDepartementsByFormation']);
+            Route::post('/ajouter', [FormaDepartController::class, 'store']);
+        });
         
         // Gestion des spécialités
         Route::apiResource('specialites', SpecialiteController::class);
         
         // Gestion des salles
         Route::apiResource('salles', SalleController::class);
+       
         
         // Gestion des bâtiments
         Route::apiResource('batiments', BatimentController::class);
@@ -100,6 +125,9 @@ Route::middleware(['auth:api'])->group(function () {
         
         // Statistiques générales
         Route::get('/stats', [UtilisateurController::class, 'getStats']);
+
+        // Gestion des associations compétence-semestre
+        Route::apiResource('compesemestres', CompeSemestreController::class);
     });
     
     // ================================
@@ -123,6 +151,11 @@ Route::middleware(['auth:api'])->group(function () {
         // Affectations
         Route::post('/affecter-formateur', [UtilisateurController::class, 'affecterFormateur']);
         Route::post('/affecter-salle', [SalleController::class, 'affecter']);
+        
+        // Gestion des salles
+        Route::get('/salles', [SalleController::class, 'index']);
+        Route::get('/salles/disponibles', [SalleController::class, 'getSallesDisponibles']);
+        Route::get('/salles/batiment/{batimentId}', [SalleController::class, 'getSallesByBatiment']);
     });
     
     // ================================
@@ -133,6 +166,10 @@ Route::middleware(['auth:api'])->group(function () {
         // Mes cours et emplois du temps
         Route::get('/mes-cours', [EmploiDuTempsController::class, 'mesCours']);
         Route::get('/mes-eleves', [UtilisateurController::class, 'mesEleves']);
+        
+        // Consultation des salles
+        Route::get('/salles', [SalleController::class, 'index']);
+        Route::get('/salles/disponibles', [SalleController::class, 'getSallesDisponibles']);
     });
     
     // ================================
@@ -150,6 +187,10 @@ Route::middleware(['auth:api'])->group(function () {
         // Surveillance
         Route::post('/signaler-incident', [UtilisateurController::class, 'signalerIncident']);
         Route::post('/marquer-presence', [UtilisateurController::class, 'marquerPresence']);
+        
+        // Gestion des salles
+        Route::get('/salles', [SalleController::class, 'index']);
+        Route::get('/salles/occupees', [SalleController::class, 'getSallesOccupees']);
     });
     
     // ================================
@@ -159,6 +200,9 @@ Route::middleware(['auth:api'])->group(function () {
         
         // Mon emploi du temps
         Route::get('/mon-emploi-du-temps', [EmploiDuTempsController::class, 'monEmploi']);
+        
+        // Consultation des salles
+        Route::get('/salles', [SalleController::class, 'index']);
     });
     
     // ================================
@@ -168,6 +212,8 @@ Route::middleware(['auth:api'])->group(function () {
         
         // Consultation des données de référence
         Route::get('/specialites', [SpecialiteController::class, 'index']);
+        Route::get('/salles', [SalleController::class, 'index']);
+        Route::get('/salles/disponibles', [SalleController::class, 'getSallesDisponibles']);
         Route::get('/metiers', [MetierController::class, 'index']);
         Route::get('/niveaux', [NiveauController::class, 'index']);
         Route::get('/departements', [DepartementController::class, 'index']);

@@ -11,7 +11,6 @@ class Formateur extends Model
 
     protected $fillable = [
         'user_id',
-         // Assurez-vous que cette colonne existe dans la table formateurs
         'specialite_id',
     
     ];
@@ -20,9 +19,18 @@ class Formateur extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
     public function specialite()
     {
         return $this->belongsTo(Specialite::class, 'specialite_id');
+    }
+    public function competences()
+    {
+        return $this->hasMany(Competence::class);
+    }
+    public function formaDepart()
+    {
+        return $this->hasMany(FormaDepart::class);
     }
  
 }

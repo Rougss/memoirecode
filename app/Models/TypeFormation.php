@@ -16,9 +16,9 @@ class TypeFormation extends Model
     ];
 
    
-    public function metiers()
+   public function niveaux()
     {
-        return $this->hasMany(Metier::class);
+        return $this->hasMany(Niveau::class);
     }
 
 }

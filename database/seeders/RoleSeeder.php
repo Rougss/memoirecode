@@ -18,10 +18,11 @@ class RoleSeeder extends Seeder
             'Directeur des Etudes',
             'Formateur',
             'Elève',
-            'Surveillant'
+            'Surveillant',
+            'Chef Département',
         ];
-        foreach ($roles as $role) {
-            Role::create(['intitule' => $role]);
-        }
+       foreach ($roles as $role) {
+        Role::firstOrCreate(['intitule' => $role]);
+    }
     }
 }

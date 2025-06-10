@@ -22,11 +22,7 @@ class Metier extends Model
         return $this->belongsTo(Niveau::class, 'niveau_id');
     }
 
-    public function typeFormation()
-    {
-        return $this->belongsTo(TypeFormation::class, 'type_formation_id');
-    }
-
+    
     public function departement()
     {
         return $this->belongsTo(Departement::class, 'departement_id');
@@ -37,11 +33,4 @@ class Metier extends Model
         return $this->hasMany(Competence::class);
     }
 
-    // Méthodes
-    public function definirCompetence($competences)
-    {
-        foreach($competences as $competence) {
-            $this->competences()->create($competence);
-        }
-    }
 }

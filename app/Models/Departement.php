@@ -12,24 +12,28 @@ class Departement extends Model
     protected $fillable = [
         'nom_departement',
         'batiment_id',
-        'user_id'
+        'formateur_id',
+        'user_id',
 
     ];
 
     // Relations
-   
-
-    public function metiers()
+  public function formateurs()
     {
-        return $this->hasMany(Metier::class);
+        return $this->hasMany(Formateur::class);
     }
     public function batiment()
     {
-        return $this->belongsTo(Batiment::class, 'batiment_id');
+        return $this->belongsTo(Batiment::class,'batiment_id');
     }
-    public function users()
+       public function metiers()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->hasMany(Metier::class);
+    }
+
+    public function formaDepart()
+    {
+        return $this->hasMany(Formateur::class);
     }
     
 }

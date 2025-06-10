@@ -13,7 +13,7 @@ class Eleve extends Model
     protected $fillable = [
         'contact_urgence',
         'user_id',
-        'salle_id'
+        'metier_id'
     ];
 
     // Relations
@@ -22,20 +22,10 @@ class Eleve extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function salle()
+    public function metier()
     {
-        return $this->belongsTo(Salle::class, 'salle_id');
+        return $this->belongsTo(Salle::class, 'metier_id');
     }
 
-    // Méthodes
-    public function consulteEmploiDuTemps()
-    {
-        return $this->salle->emploiDuTemps;
-    }
 
-    public function recevoirNotification($message)
-    {
-        // Logique pour recevoir une notification
-        // Peut utiliser les notifications Laravel
-    }
 }

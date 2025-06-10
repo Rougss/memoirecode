@@ -10,7 +10,7 @@ class EleveController extends Controller
     // Lister tous les élèves avec les relations user et salle
     public function index()
     {
-        $eleves = Eleve::with(['user', 'salle'])->get();
+        $eleves = Eleve::with(['user', 'metier'])->get();
 
         return response()->json([
             'success' => true,
@@ -24,7 +24,7 @@ class EleveController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'contact_urgence' => 'nullable|string',
-            'salle_id' => 'nullable|exists:salles,id',
+            'metier_id' => 'nullable|exists:metiers,id',
         ]);
 
         $eleve = Eleve::create($validated);
@@ -32,14 +32,14 @@ class EleveController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Élève ajouté avec succès',
-            'data' => $eleve->load(['user', 'salle'])
+            'data' => $eleve->load(['user', 'metier'])
         ], 201);
     }
 
     // Afficher un élève spécifique
     public function show($id)
     {
-        $eleve = Eleve::with(['user', 'salle'])->find($id);
+        $eleve = Eleve::with(['user', 'metier'])->find($id);
 
         if (!$eleve) {
             return response()->json([
@@ -69,7 +69,7 @@ class EleveController extends Controller
         $validated = $request->validate([
             'user_id' => 'sometimes|exists:users,id',
             'contact_urgence' => 'nullable|string',
-            'salle_id' => 'nullable|exists:salles,id',
+            'metier_id' => 'nullable|exists:metiers,id',
         ]);
 
         $eleve->update($validated);
@@ -77,7 +77,7 @@ class EleveController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Élève mis à jour avec succès',
-            'data' => $eleve->load(['user', 'salle'])
+            'data' => $eleve->load(['user', 'metier'])
         ]);
     }
 

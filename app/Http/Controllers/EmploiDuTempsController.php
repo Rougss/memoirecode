@@ -10,7 +10,7 @@ class EmploiDuTempsController extends Controller
     // Liste tous les créneaux
     public function index()
     {
-        $creneaux = EmploiDuTemps::with(['annee', 'salle', 'competence'])->get();
+        $creneaux = EmploiDuTemps::with(['annee', 'salle'])->get();
         return response()->json(['success' => true, 'data' => $creneaux]);
     }
 
@@ -23,8 +23,7 @@ class EmploiDuTempsController extends Controller
             'heure_fin' => 'required|date_format:H:i:s|after:heure_debut',
             'date_debut' => 'required|date',
             'date_fin' => 'required|date|after_or_equal:date_debut',
-            'salle_id' => 'required|exists:salles,id',
-            'competence_id' => 'required|exists:competences,id',
+           
         ]);
 
         $creneau = EmploiDuTemps::create($validated);
@@ -59,8 +58,6 @@ class EmploiDuTempsController extends Controller
             'heure_fin' => 'sometimes|date_format:H:i:s|after:heure_debut',
             'date_debut' => 'sometimes|date',
             'date_fin' => 'sometimes|date|after_or_equal:date_debut',
-            'salle_id' => 'sometimes|exists:salles,id',
-            'competence_id' => 'sometimes|exists:competences,id',
         ]);
 
         $creneau->update($validated);

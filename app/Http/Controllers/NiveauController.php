@@ -18,6 +18,7 @@ class NiveauController extends Controller
     {
         $validated = $request->validate([
             'intitule' => 'required|string|max:255|unique:niveaux,intitule',
+            'type_formation_id' => 'required|string|max:255',
         ]);
 
         $niveau = Niveau::create($validated);

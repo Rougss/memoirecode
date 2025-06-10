@@ -23,6 +23,7 @@ class CompetenceController extends Controller
             'quota_horaire' => 'nullable|numeric',
             'metier_id' => 'required|exists:metiers,id',
             'formateur_id' => 'required|exists:formateurs,id',
+            'salle_id' => 'required|exists:salles,id',
         ]);
 
         $competence = Competence::create($validated);
@@ -58,6 +59,7 @@ class CompetenceController extends Controller
             'quota_horaire' => 'nullable|numeric',
             'metier_id' => 'required|exists:metiers,id',
             'formateur_id' => 'required|exists:formateurs,id',
+            'salle_id' => 'required|exists:salles,id',
         ]);
 
         $competence->update($validated);
