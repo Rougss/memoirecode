@@ -21,6 +21,7 @@ use App\Http\Controllers\CompEmploiController;
 use App\Http\Controllers\FormaDepartController;
 use App\Models\Salle;
 use Illuminate\Support\Facades\Route;
+use Mockery\Matcher\Type;
 
 // ================================
 // AUTHENTIFICATION (Non protégé)
@@ -33,6 +34,7 @@ Route::get('/roles', [RoleController::class, 'index']);
 // ROUTES PROTÉGÉES PAR AUTH SEULEMENT
 // ================================
 Route::middleware(['auth:api'])->group(function () {
+     Route::get('emploi-du-temps', [EmploiDuTempsController::class, 'index'])->name('emploi.index');
 
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -83,6 +85,16 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/formation/{formationId}/departements', [FormaDepartController::class, 'getDepartementsByFormation']);
             Route::post('/ajouter', [FormaDepartController::class, 'store']);
         });
+
+       Route::prefix('emploi-du-temps')->group(function () {
+         Route::get('emploi-du-temps/formateur/{formateurId}', [EmploiDuTempsController::class, 'getFormateurSchedule']);
+          Route::get('emploi-du-temps/annee/{anneeId}', [EmploiDuTempsController::class, 'getAnneeSchedule']);
+          Route::post('/generate', [EmploiDuTempsController::class, 'generateSchedule']);
+        Route::post('emploi-du-temps/check-conflicts', [EmploiDuTempsController::class, 'checkConflicts']);
+       });
+
+       
+
         
         // Gestion des spécialités
         Route::apiResource('specialites', SpecialiteController::class);
@@ -95,7 +107,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('batiments', BatimentController::class);
         
         // Gestion des emplois du temps
-        Route::apiResource('emplois-du-temps', EmploiDuTempsController::class);
+        Route::apiResource('emploi-du-temps', EmploiDuTempsController::class);
         
         // Gestion des années
         Route::apiResource('annees', AnneeController::class);
@@ -130,6 +142,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('compesemestres', CompeSemestreController::class);
     });
     
+       
+
     // ================================
     // ROUTES DIRECTEUR DES ÉTUDES (sans restriction de rôle)
     // ================================
@@ -219,6 +233,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/departements', [DepartementController::class, 'index']);
         Route::get('/annees', [AnneeController::class, 'index']);
         Route::get('/semestres', [SemestreController::class, 'index']);
+        Route::get('/types-formation', [TypeFormationController::class, 'index']);
         
         // Recherche globale
         Route::get('/search', [UtilisateurController::class, 'search']);
