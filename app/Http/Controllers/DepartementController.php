@@ -73,4 +73,23 @@ class DepartementController extends Controller
 
         return response()->json(['message' => 'Département supprimé avec succès']);
     }
+
+    public function assignerChef(Request $request, $departementId)
+{
+    $validated = $request->validate([
+        'formateur_id' => 'required|exists:formateurs,id'
+    ]);
+
+    $departement = Departement::findOrFail($departementId);
+    
+    $departement->update([
+        'formateur_id' => $validated['formateur_id']
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Chef de département assigné avec succès',
+        'data' => $departement->load('chefDepartement.user')
+    ]);
+}
 }

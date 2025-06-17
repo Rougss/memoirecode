@@ -51,5 +51,9 @@ class Competence extends Model
     {
         return $this->hasMany(CompEmploi::class);
     }
+    public function salle()
+    {
+        return $this->belongsTo(Salle::class, 'salle_id');
+    }
     
 }

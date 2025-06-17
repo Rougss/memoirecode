@@ -91,6 +91,23 @@ class UtilisateurController extends Controller
     }
 }
 
+public function getFormateurByUserId($userId)
+{
+    $formateur = Formateur::where('user_id', $userId)->with('user')->first();
+    
+    if (!$formateur) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Formateur non trouvé'
+        ], 404);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $formateur
+    ]);
+}
+
     // Dashboard administrateur (statistiques)
     private function adminDashboard()
     {

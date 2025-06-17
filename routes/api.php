@@ -34,7 +34,22 @@ Route::get('/roles', [RoleController::class, 'index']);
 // ROUTES PROTÉGÉES PAR AUTH SEULEMENT
 // ================================
 Route::middleware(['auth:api'])->group(function () {
-     Route::get('emploi-du-temps', [EmploiDuTempsController::class, 'index'])->name('emploi.index');
+     Route::prefix('admin/emploi-du-temps')->group(function () {
+        
+        // 👈 VOS ROUTES EXISTANTES (à garder)
+        Route::get('/', [EmploiDuTempsController::class, 'index']);
+        Route::post('/', [EmploiDuTempsController::class, 'store']);
+        Route::get('/formateur/{formateurId}', [EmploiDuTempsController::class, 'getFormateurSchedule']);
+        Route::get('/annee/{anneeId}', [EmploiDuTempsController::class, 'getAnneeSchedule']);
+        
+        // 👈 NOUVELLES ROUTES À AJOUTER
+        Route::post('/generer-auto', [EmploiDuTempsController::class, 'genererAutomatique']);
+        Route::post('/analyser', [EmploiDuTempsController::class, 'analyserEmploi']);
+        Route::post('/rapport', [EmploiDuTempsController::class, 'genererRapport']);
+        Route::post('/reorganiser', [EmploiDuTempsController::class, 'proposerReorganisation']);
+    });
+
+    
 
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -66,6 +81,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::put('/{id}', [UtilisateurController::class, 'update']);
             Route::delete('/{id}', [UtilisateurController::class, 'destroy']);
             Route::post('/{id}/reset-password', [UtilisateurController::class, 'resetPassword']);
+             Route::get('/{id}/formateur', [UtilisateurController::class, 'getFormateurByUserId']);
         });
 
         Route::prefix('compesemestres')->group(function () {
@@ -86,12 +102,11 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('/ajouter', [FormaDepartController::class, 'store']);
         });
 
-       Route::prefix('emploi-du-temps')->group(function () {
-         Route::get('emploi-du-temps/formateur/{formateurId}', [EmploiDuTempsController::class, 'getFormateurSchedule']);
-          Route::get('emploi-du-temps/annee/{anneeId}', [EmploiDuTempsController::class, 'getAnneeSchedule']);
-          Route::post('/generate', [EmploiDuTempsController::class, 'generateSchedule']);
-        Route::post('emploi-du-temps/check-conflicts', [EmploiDuTempsController::class, 'checkConflicts']);
-       });
+         Route::put('/departements/{id}/chef', [DepartementController::class, 'assignerChef']);
+
+        
+
+
 
        
 

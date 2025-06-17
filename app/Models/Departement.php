@@ -35,5 +35,9 @@ class Departement extends Model
     {
         return $this->hasMany(Formateur::class);
     }
+    public function chefDepartement()
+    {
+        return $this->belongsTo(Formateur::class, 'formateur_id');
+    }
     
 }
