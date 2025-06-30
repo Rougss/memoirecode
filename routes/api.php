@@ -17,6 +17,7 @@ use App\Http\Controllers\TypeFormationController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CompeSemestreController;
+use App\Http\Controllers\FormateurController;
 use App\Http\Controllers\CompEmploiController;
 use App\Http\Controllers\FormaDepartController;
 use App\Models\Salle;
@@ -39,6 +40,9 @@ Route::middleware(['auth:api'])->group(function () {
         // 👈 VOS ROUTES EXISTANTES (à garder)
         Route::get('/', [EmploiDuTempsController::class, 'index']);
         Route::post('/', [EmploiDuTempsController::class, 'store']);
+        
+        Route::post('/planifier-competences', [EmploiDuTempsController::class, 'planifierCompetences']);
+        Route::get('/competences-avec-quota', [EmploiDuTempsController::class, 'getCompetencesAvecQuota']);
         Route::get('/formateur/{formateurId}', [EmploiDuTempsController::class, 'getFormateurSchedule']);
         Route::get('/annee/{anneeId}', [EmploiDuTempsController::class, 'getAnneeSchedule']);
         
@@ -47,6 +51,19 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/analyser', [EmploiDuTempsController::class, 'analyserEmploi']);
         Route::post('/rapport', [EmploiDuTempsController::class, 'genererRapport']);
         Route::post('/reorganiser', [EmploiDuTempsController::class, 'proposerReorganisation']);
+         Route::get('/quotas-statut', [EmploiDuTempsController::class, 'getQuotasStatut']);
+
+          Route::post('/planifier-intelligent', [EmploiDuTempsController::class, 'planifierIntelligent']);
+        Route::post('/preview-limitation', [EmploiDuTempsController::class, 'previewLimitation']);
+        Route::post('/verifier-disponibilite', [EmploiDuTempsController::class, 'verifierDisponibilite']);
+
+         Route::put('/{id}/deplacer', [EmploiDuTempsController::class, 'deplacerCours']);
+        Route::post('/echanger', [EmploiDuTempsController::class, 'echangerCours']);
+        Route::get('/creneaux-disponibles', [EmploiDuTempsController::class, 'getCreneauxDisponibles']);
+
+         Route::get('/metiers-avec-competences', [EmploiDuTempsController::class, 'getMetiersAvecCompetences']);
+        Route::get('/competences-avec-quota', [EmploiDuTempsController::class, 'getCompetencesAvecQuota']);
+        Route::get('/competences-avec-quota-metier/{metierId}', [EmploiDuTempsController::class, 'getCompetencesAvecQuotaByMetier']);
     });
 
     
@@ -64,6 +81,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/', [UtilisateurController::class, 'profile']);
         Route::put('/{id}', [UtilisateurController::class, 'updateProfile']);
+         Route::post('/change-password', [UtilisateurController::class, 'changePassword']);
     });
     
     // ================================
@@ -101,25 +119,31 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/formation/{formationId}/departements', [FormaDepartController::class, 'getDepartementsByFormation']);
             Route::post('/ajouter', [FormaDepartController::class, 'store']);
         });
+        Route::get('/metiers-avec-competences', [MetierController::class, 'getMetiersAvecCompetences']);
+        Route::get('/metiers/{metierId}/competences', [MetierController::class, 'getCompetencesMetier']);
+        Route::get('/metiers/{metierId}/competences-avec-quota', [MetierController::class, 'getCompetencesAvecQuotaMetier']);
+        Route::get('/metiers/{metierId}/statistiques', [MetierController::class, 'getStatistiquesMetier']);
+
 
          Route::put('/departements/{id}/chef', [DepartementController::class, 'assignerChef']);
 
-        
+         Route::get('/eleves/users/{userId}', [UtilisateurController::class, 'getEleveByUserId']);
 
 
-
-       
-
+         Route::apiResource('formateurs', FormateurController::class);
         
         // Gestion des spécialités
         Route::apiResource('specialites', SpecialiteController::class);
         
         // Gestion des salles
         Route::apiResource('salles', SalleController::class);
+
+        
        
         
         // Gestion des bâtiments
         Route::apiResource('batiments', BatimentController::class);
+
         
         // Gestion des emplois du temps
         Route::apiResource('emploi-du-temps', EmploiDuTempsController::class);

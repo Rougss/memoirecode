@@ -18,13 +18,13 @@ class Eleve extends Model
 
     // Relations
     public function user()
-    {
+    { 
         return $this->belongsTo(User::class, 'user_id');
     }
 
     public function metier()
     {
-        return $this->belongsTo(Salle::class, 'metier_id');
+        return $this->belongsTo(metier::class, 'metier_id');
     }
 
 

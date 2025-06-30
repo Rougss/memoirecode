@@ -16,7 +16,7 @@ class Salle extends Model
     ];
 
     // Relations
-    public function batiments()
+    public function batiment()
     {
         return $this->belongsTo(Batiment::class, 'batiment_id');
     }
